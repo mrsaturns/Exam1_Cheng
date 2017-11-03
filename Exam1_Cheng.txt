@@ -13,7 +13,7 @@
 	1. AFV73403.1
 	2. BlastP
 	3. There were more than 20000 hits   
-	4. 147 species
+	4. 147 species (using the BLAST I did, limiting the results to 20000)
 	5. 1. XP_021678755.1  E value= 0
 	   2. XP_021601648.1. E value= 0
 	   3. XP_021613222.1. E value= 2e-161
@@ -38,8 +38,8 @@
 	2. LiSs (Linkage map superscaffolder)
 	3. Lep-MAP- constructs linkage maps using high-density SNP data, MIP Scaffolder- genome scaffolding, Coral and HybridSHREC- read error correction, PANNZER- functional annotation, EPT and SANS for orthology prediction
 	4. Yes, we can search for the project keywords in BioProject and find the group (University of Helsinki) and their projects. 
-	5. We can take multiple genome sequences of this species and compare them to each other to find SNPs. For example, can compare this to the draft genome available at NCBI (submitted by this group, the University of Helsinki). Or, we can use these multiple genome sequences to do de novo assembly and reference each individual sequence to that to call SNPs. 
-	
+	5. Our task is to detect de novo SNPs, not included by SNP arrays. We can achieve that by looking at next generation sequencing (especially whole genome sequencing) and aligning publicly available sequences to the reference genomes assembled by the above group (University  of Helsinki)
+
 9.
 	1. grep ">" Homo_sapiens.GRCh38.cds.all.fa -c
 101933
