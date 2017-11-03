@@ -1,0 +1,85 @@
+---
+title: "Exam1_Cheng"
+author: "Caleb Cheng"
+date: "10/31/2017"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+#Insert data
+```{r}
+setwd("~/Desktop/F17/MCDB416/Exam1/Question11")
+ExonP <- read.delim("Homo_sapiens.GRCh38.82.abinitio.gtf_Exon", sep= "\t", header=FALSE)
+TranscriptP <- read.delim("Homo_sapiens.GRCh38.82.abinitio.gtf_Transcript", sep= "\t", header=FALSE)
+```
+#Clean up data
+```{r}
+Exon <- ExonP[ ,c(1,3,4,5)]
+Transcript <- TranscriptP[ ,c(1,3,4,5)]
+colnames(Exon) <- c("Chr", "Type", "Start", "End")
+colnames(Transcript) <- c("Chr", "Type", "Start", "End")
+```
+
+#Calculate standard error and generate tables for average exon length +/- SE
+```{r}
+Exon$Length <- Exon$End-Exon$Start+1
+Exon$count <- 1
+Exon_mean <- aggregate(Exon$Length,list(Exon$Chr), mean)
+Exon_sd <- aggregate(Exon$Length, list(Exon$Chr), sd)
+Exon_counts <- aggregate(Exon$count, list(Exon$Chr), sum)
+Exon_stats1<- merge(Exon_mean, Exon_sd, by="Group.1")
+Exon_stats<-merge(Exon_stats1, Exon_counts, by="Group.1")
+colnames(Exon_stats)<- c("Chr", "MeanLength", "Sd", "SampleSize")
+Exon_stats$sde <- (Exon_stats$Sd/sqrt(Exon_stats$SampleSize))
+#calculate standard error
+Exon_stats$LengthplusSE <- (Exon_stats$MeanLength+Exon_stats$sde)
+Exon_stats$LengthminusSE <- (Exon_stats$MeanLength-Exon_stats$sde)
+#tried to clean up the table a bit
+new<-Exon_stats[-grep("CHR", Exon_stats$Chr),]
+new<-new[-grep("KI", new$Chr),]
+Exon_stats_clean<-new[-grep("GL", new$Chr),]
+Exon_stats_clean
+``` 
+
+#Calculate standard error and generate tables for average transcript length +/- SE
+```{r}
+Transcript$Length <- Transcript$End-Transcript$Start+1
+Transcript$count <- 1
+Transcript_mean <- aggregate(Transcript$Length, list(Transcript$Chr), mean)
+Trasncript_sd <- aggregate(Transcript$Length, list(Transcript$Chr), sd)
+Transcript_counts <- aggregate(Transcript$count, list(Transcript$Chr), sum)
+Transcript_stats1 <- merge(Transcript_mean, Trasncript_sd, by="Group.1")
+Transcript_stats <- merge(Transcript_stats1, Transcript_counts, by= "Group.1")
+colnames(Transcript_stats) <- c("Chr", "MeanLength", "Sd", "SampleSize")
+Transcript_stats$sde <- (Transcript_stats$Sd/sqrt(Transcript_stats$SampleSize))
+#calculate standard error
+Transcript_stats$LengthplusSE <- (Transcript_stats$MeanLength+Transcript_stats$sde)
+Transcript_stats$LengthminusSE <- (Transcript_stats$MeanLength-Transcript_stats$sde)
+#tried to clean up the table a bit
+Tnew<-Transcript_stats[-grep("CHR", Transcript_stats$Chr),]
+Tnew<-Tnew[-grep("KI", Tnew$Chr),]
+Transcript_stats_clean<-Tnew[-grep("GL", Tnew$Chr),]
+Transcript_stats_clean
+```
+
+#Making a histogram of X and Y chromsome exon lengths
+```{r}
+Exon_XY <- subset(Exon, Exon$Chr==c("X","Y"))
+library(ggplot2)
+ggplot(Exon_XY)+ geom_histogram(aes(x=Length), binwidth = 30)
+```
+
+#Seeing if there is a correlation between chromosome size and average exon length
+```{r}
+size<-read.delim("hg19.chrom.sizes.txt", header=FALSE)
+#needed to download chromosome size from UCSC hg19
+colnames(size) <- c("Chr", "size")
+Exoncor<- merge(Exon_stats_clean,size, by="Chr")
+ggplot(Exoncor) + geom_point(aes(x=size, y=MeanLength))
+cor(Exoncor$size,Exoncor$MeanLength,method = "pearson")
+cor(Exoncor$size,Exoncor$MeanLength,method = "spearman")
+```
+There does not seem to be a relationship between chromosome size and average exon length. 

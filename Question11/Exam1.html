@@ -126,7 +126,7 @@ $(document).ready(function () {
 
 <div id="insert-data" class="section level1">
 <h1>Insert data</h1>
-<pre class="r"><code>setwd(&quot;~/Desktop/F17/MCDB416/Exam_1/Question11&quot;)
+<pre class="r"><code>setwd(&quot;~/Desktop/F17/MCDB416/Exam1/Question11&quot;)
 ExonP &lt;- read.delim(&quot;Homo_sapiens.GRCh38.82.abinitio.gtf_Exon&quot;, sep= &quot;\t&quot;, header=FALSE)
 TranscriptP &lt;- read.delim(&quot;Homo_sapiens.GRCh38.82.abinitio.gtf_Transcript&quot;, sep= &quot;\t&quot;, header=FALSE)</code></pre>
 </div>
@@ -148,6 +148,7 @@ Exon_stats1&lt;- merge(Exon_mean, Exon_sd, by=&quot;Group.1&quot;)
 Exon_stats&lt;-merge(Exon_stats1, Exon_counts, by=&quot;Group.1&quot;)
 colnames(Exon_stats)&lt;- c(&quot;Chr&quot;, &quot;MeanLength&quot;, &quot;Sd&quot;, &quot;SampleSize&quot;)
 Exon_stats$sde &lt;- (Exon_stats$Sd/sqrt(Exon_stats$SampleSize))
+#calculate standard error
 Exon_stats$LengthplusSE &lt;- (Exon_stats$MeanLength+Exon_stats$sde)
 Exon_stats$LengthminusSE &lt;- (Exon_stats$MeanLength-Exon_stats$sde)
 #tried to clean up the table a bit
@@ -192,6 +193,7 @@ Transcript_stats1 &lt;- merge(Transcript_mean, Trasncript_sd, by=&quot;Group.1&q
 Transcript_stats &lt;- merge(Transcript_stats1, Transcript_counts, by= &quot;Group.1&quot;)
 colnames(Transcript_stats) &lt;- c(&quot;Chr&quot;, &quot;MeanLength&quot;, &quot;Sd&quot;, &quot;SampleSize&quot;)
 Transcript_stats$sde &lt;- (Transcript_stats$Sd/sqrt(Transcript_stats$SampleSize))
+#calculate standard error
 Transcript_stats$LengthplusSE &lt;- (Transcript_stats$MeanLength+Transcript_stats$sde)
 Transcript_stats$LengthminusSE &lt;- (Transcript_stats$MeanLength-Transcript_stats$sde)
 #tried to clean up the table a bit
